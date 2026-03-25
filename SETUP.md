@@ -1,8 +1,6 @@
 # AvionDash — Setup Walkthrough
 
-Complete installation guide for **RHEL 9 / Rocky Linux 9 / AlmaLinux 9** with Apache httpd, PHP-FPM 8.2, and MariaDB 10.11.
-
-> For Windows Server + IIS + MS SQL Server, see the Windows-specific setup guide in the project documentation.
+Complete installation guide for RHEL with Apache httpd, PHP-FPM 8.2, and MariaDB 10.11.
 
 ---
 
