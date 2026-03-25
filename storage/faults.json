@@ -1,0 +1,14 @@
+{
+  "slow_flights_query": false,
+  "n_plus_one_pilots": false,
+  "missing_index_scan": false,
+  "connection_pool_exhaust": false,
+  "page_500_aircraft": false,
+  "slow_page_reports": false,
+  "memory_leak_dashboard": false,
+  "bad_data_passengers": false,
+  "cpu_spike_query_runner": false,
+  "log_flood": false,
+  "auth_flap": false,
+  "alert_cascade": false
+}
