@@ -5,6 +5,7 @@
 AvionDash simulates a real airline operations centre — tracking live flight statuses, fleet health, crew records, airport routing, maintenance logs, and operational alerts — all backed by real SQL queries against a production-class database. Every monitoring signal it generates is authentic rather than synthetic noise.
 
 What it simulates
+
 It looks and behaves like a real internal tool an airline operations team would use day-to-day — tracking which flights are in the air right now, managing a fleet of 12 aircraft, scheduling crews, logging maintenance work, and monitoring operational alerts. All the data is synthetic and fictional, but the SQL queries, session management, file I/O, and HTTP responses are completely real, which means every monitoring signal it generates in Datadog is authentic rather than made-up noise.
 
 Why it exists
