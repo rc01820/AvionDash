@@ -4,6 +4,21 @@
 
 AvionDash simulates a real airline operations centre — tracking live flight statuses, fleet health, crew records, airport routing, maintenance logs, and operational alerts — all backed by real SQL queries against a production-class database. Every monitoring signal it generates is authentic rather than synthetic noise.
 
+What it simulates
+It looks and behaves like a real internal tool an airline operations team would use day-to-day — tracking which flights are in the air right now, managing a fleet of 12 aircraft, scheduling crews, logging maintenance work, and monitoring operational alerts. All the data is synthetic and fictional, but the SQL queries, session management, file I/O, and HTTP responses are completely real, which means every monitoring signal it generates in Datadog is authentic rather than made-up noise.
+
+Why it exists
+The core problem with most monitoring demos is that the application is too simple — a "Hello World" endpoint that returns instantly doesn't give APM anything interesting to trace, and a server that never has problems doesn't give monitors anything meaningful to fire on. AvionDash solves this by being complex enough to generate genuine signals across every Datadog surface simultaneously.
+
+What makes it interesting for a Datadog demo
+It has two layers that work together:
+The application itself runs real PHP queries against a real MariaDB database, serving eleven pages with joins, aggregations, stored procedures, and session handling. This gives Datadog APM real traces to instrument, the database monitoring integration real query plans to analyze, log management real PHP error log entries to parse, and RUM real page loads to measure.
+The Chaos Control Panel (/chaos.php, admin only) lets you inject 20 configurable fault scenarios on demand using toggle switches — no code changes, no restarts. You can make a page throw an HTTP 500, inject a 4-second database sleep, leak 64MB of memory per request, flood the error log with 75 warnings per page load, corrupt passenger count data by multiplying it by 847, or make the health endpoint alternate between 200 and 503. Each fault is designed to trigger a specific Datadog monitor or surface a specific monitoring capability.
+
+The monitoring story it tells
+The most powerful part of AvionDash for a demo is that some faults are invisible to infrastructure monitoring. When the exception_silencer fault is armed, database errors are silently swallowed — the page shows empty tables, APM reports a 0% error rate, CPU and memory are normal, but the application is completely broken. The only thing that catches it is a business metric monitor watching aviation.flights.airborne drop to zero, or a Synthetic test asserting on page content. Similarly, timezone_corruption shifts all timestamps back 24 hours in the PHP layer — the database is clean, the server metrics are green, but every departure time shown to users is wrong. Infrastructure monitoring misses it entirely. Only a Synthetic content assertion or a RUM rage click pattern reveals it.
+This makes AvionDash useful for the conversation about why observability requires APM, logs, RUM, Synthetic, and business metrics together — not just server CPU and memory.
+
 ---
 
 ## What Is This?
