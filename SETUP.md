@@ -31,7 +31,7 @@ Complete installation guide for RHEL with Apache httpd, PHP-FPM 8.2, and MariaDB
 
 | Component | Minimum | Notes |
 |---|---|---|
-| OS | RHEL 9.x | Rocky / Alma Linux 9 also fully supported |
+| OS | RHEL 9.x | Alma Linux 9 also fully supported |
 | CPU | 2 vCPUs | `cpu_spike` fault pegs one core |
 | RAM | 4 GB | `memory_leak` fault allocates 64 MB per Dashboard load |
 | Disk | 20 GB | OS + logs + MariaDB data |
