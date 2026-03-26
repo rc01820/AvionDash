@@ -932,3 +932,48 @@ cat /var/www/html/aviondash/storage/faults.json
 
 # 6. Wait 2-3 minutes for Datadog monitors to recover to OK state
 ```
+
+## 19. Passwords are stored as bcrypt hashes in the users table. There are two ways to change them.
+
+### Option 1 — Generate a hash and update directly in MariaDB
+Generate the hash on the server using PHP, then paste it into a SQL UPDATE:
+bash# Generate a bcrypt hash for your new password
+php -r "echo password_hash('YourNewPassword', PASSWORD_BCRYPT) . PHP_EOL;"
+ Output looks like: $2y$10$abc123...
+sql-- Run in MariaDB
+mariadb -u root -p aviationdb
+
+UPDATE users SET password_hash = '$2y$10$PASTE_YOUR_HASH_HERE' WHERE username = 'admin';
+UPDATE users SET password_hash = '$2y$10$PASTE_YOUR_HASH_HERE' WHERE username = 'analyst';
+UPDATE users SET password_hash = '$2y$10$PASTE_YOUR_HASH_HERE' WHERE username = 'viewer';
+
+-- Verify
+SELECT username, role, LEFT(password_hash, 10) AS hash_preview FROM users;
+
+### Option 2 — Change all three at once with a single script
+bashphp -r "
+\$pass = 'YourNewPassword';
+\$hash = password_hash(\$pass, PASSWORD_BCRYPT);
+echo \"UPDATE users SET password_hash = '\$hash' WHERE username IN ('admin','analyst','viewer');\" . PHP_EOL;
+" | mariadb -u root -p aviationdb
+
+### Option 3 — Different password per role
+bashphp -r "
+\$roles = ['admin' => 'AdminPass1!', 'analyst' => 'AnalystPass2!', 'viewer' => 'ViewerPass3!'];
+foreach (\$roles as \$user => \$pass) {
+    \$hash = password_hash(\$pass, PASSWORD_BCRYPT);
+    echo \"UPDATE users SET password_hash = '\$hash' WHERE username = '\$user';\" . PHP_EOL;
+}
+" | mariadb -u root -p aviationdb
+
+### Update the demo credentials display on the login page
+If you change the passwords, update the credentials shown on the login screen. Edit /var/www/html/aviondash/login.php and find this block near the bottom:
+php<div class="cred-row">
+  <span><code>admin</code> / <code>password</code></span>
+Change password to whatever your new password is, or remove the credentials block entirely if this is a less open demo environment.
+
+### Reset back to password for demo use
+sql-- The default hash for 'password' used in seed.sql
+UPDATE users SET password_hash = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'
+WHERE username IN ('admin', 'analyst', 'viewer');
+That hardcoded hash is the standard Laravel/PHP test hash for the string password — safe to use for any demo environment.
